@@ -35,7 +35,9 @@ class HandTracker:
             
             output["hand_detected"] = True
             output["confidence"] = handedness_info.score
-            output["handedness"] = handedness_info.label  # 'Left' or 'Right'
+            # MediaPipe's handedness is often flipped with front-facing webcams
+            label = handedness_info.label
+            output["handedness"] = "Right" if label == "Left" else "Left"
             
             for lm in hand_landmarks.landmark:
                 # Normalized coordinates (0 to 1)

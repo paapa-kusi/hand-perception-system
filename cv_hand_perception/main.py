@@ -10,6 +10,7 @@ from filters import HandStateFilter
 from calibration import CalibrationManager
 from logger import Logger
 from visualizer import Visualizer
+from tester import PerformanceTester
 
 def main():
     # Load config
@@ -52,6 +53,7 @@ def main():
     
     logger = Logger(log_dir="logs")
     visualizer = Visualizer()
+    tester = PerformanceTester()
     
     if not camera.start():
         return
@@ -80,6 +82,8 @@ def main():
         current_time = time.time()
         fps = 1.0 / max(current_time - prev_time, 0.001)
         prev_time = current_time
+        
+        process_start_time = time.time()
         
         # 1. Detect Hand & Track Landmarks
         tracker_output = tracker.process_frame(frame)
@@ -133,6 +137,10 @@ def main():
         # Optional: Gesture Label logic (stubbed for now)
         gesture = "unknown"
         
+        process_end_time = time.time()
+        latency = process_end_time - process_start_time
+        tester.update(tracker_output, final_state.get("fingers"), latency)
+        
         # 5. Logging
         logger.log(final_state, gesture)
         
@@ -145,12 +153,18 @@ def main():
         if tracker_output["hand_detected"]:
             visualizer.draw_skeleton(frame, tracker_output["landmarks_pixel"])
         
-        visualizer.draw_dashboard(frame, final_state, fps)
+        visualizer.draw_dashboard(frame, final_state, fps, is_testing=tester.is_testing)
         
         cv2.imshow("Hand Perception - Phase 1", frame)
         
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
             break
+        elif key == ord('t'):
+            if tester.is_testing:
+                tester.stop_test()
+            else:
+                tester.start_test()
             
     camera.release()
     tracker.close()

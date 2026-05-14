@@ -31,7 +31,7 @@ class Visualizer:
         for pt in landmarks_pixel:
             cv2.circle(frame, pt, 5, (0, 0, 255), -1)
 
-    def draw_dashboard(self, frame, state, fps):
+    def draw_dashboard(self, frame, state, fps, is_testing=False):
         """
         Draws telemetry data on the screen.
         """
@@ -42,6 +42,11 @@ class Visualizer:
         
         y_offset = 30
         
+        if is_testing:
+            cv2.putText(frame, "RECORDING TEST", (10, y_offset), self.font, 0.7, (0, 0, 255), 2)
+            y_offset += 30
+            
+
         # FPS and Confidence
         cv2.putText(frame, f"FPS: {fps:.1f}", (10, y_offset), self.font, 0.7, (0, 255, 0), 2)
         y_offset += 30

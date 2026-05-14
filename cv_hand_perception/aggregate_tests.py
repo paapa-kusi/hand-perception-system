@@ -1,0 +1,56 @@
+import os
+import json
+import glob
+
+def main():
+    report_dir = "test_reports"
+    output_file = "robustness_tests.md"
+    
+    if not os.path.exists(report_dir):
+        print(f"Error: Directory '{report_dir}' not found. Run some tests first!")
+        return
+
+    report_files = glob.glob(os.path.join(report_dir, "*.json"))
+    
+    if not report_files:
+        print(f"No test reports found in '{report_dir}'.")
+        return
+
+    print(f"Found {len(report_files)} test reports. Aggregating...")
+
+    # Start formatting the markdown file
+    md_content = "# Robustness Test Results\n\n"
+    md_content += "| Condition | FPS | Detection Rate | Jitter | Notes |\n"
+    md_content += "| :--- | :--- | :--- | :--- | :--- |\n"
+    
+    reports_processed = 0
+
+    # Sort files to maintain chronological order
+    for filepath in sorted(report_files):
+        try:
+            with open(filepath, "r") as f:
+                data = json.load(f)
+                
+            condition = data.get("condition", "[Fill in]")
+            fps = data.get("fps", 0.0)
+            detection_rate = data.get("detection_rate_pct", 0.0)
+            lm_jitter = data.get("avg_landmark_jitter", 0.0)
+            ang_jitter = data.get("avg_angle_jitter", 0.0)
+            latency = data.get("avg_latency_ms", 0.0)
+            lost = data.get("lost_tracking_events", 0)
+            notes = data.get("notes", "")
+            
+            row = f"| {condition} | {fps:.1f} | {detection_rate:.1f}% | LM: {lm_jitter:.4f}, Ang: {ang_jitter:.2f} | Latency: {latency:.1f}ms, Lost: {lost} {notes} |\n"
+            md_content += row
+            reports_processed += 1
+            
+        except Exception as e:
+            print(f"Error reading {filepath}: {e}")
+
+    with open(output_file, "w") as f:
+        f.write(md_content)
+        
+    print(f"✅ Successfully aggregated {reports_processed} reports into '{output_file}'!")
+
+if __name__ == "__main__":
+    main()

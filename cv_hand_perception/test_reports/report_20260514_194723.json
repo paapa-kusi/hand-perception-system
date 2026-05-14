@@ -1,0 +1,12 @@
+{
+    "timestamp": "20260514_194723",
+    "condition": "Slowly moving back right hand in the dark until it couldn't be detected -paapa",
+    "duration_seconds": 35.120553970336914,
+    "fps": 15.204771554885507,
+    "detection_rate_pct": 97.75280898876404,
+    "avg_landmark_jitter": 0.0032119297792101644,
+    "avg_angle_jitter": 0.49751043500182973,
+    "avg_latency_ms": 17.95269844683815,
+    "lost_tracking_events": 1,
+    "notes": ""
+}
