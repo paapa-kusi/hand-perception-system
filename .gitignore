@@ -1,0 +1,13 @@
+.aider*
+
+# OS generated files
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Application Logs
+cv_hand_perception/logs/
+*.csv

@@ -1,0 +1,20 @@
+camera:
+  device_id: 0
+  width: 640
+  height: 480
+  fps: 30
+
+mediapipe:
+  max_num_hands: 1
+  model_complexity: 1
+  min_detection_confidence: 0.6
+  min_tracking_confidence: 0.6
+
+filters:
+  alpha_landmarks: 0.5
+  alpha_curl: 0.3
+  timeout_seconds: 0.3
+
+calibration:
+  default_open: 0.0
+  default_closed: 1.0
