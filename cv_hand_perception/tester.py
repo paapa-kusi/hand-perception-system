@@ -1,5 +1,8 @@
 import time
 import math
+import os
+import json
+from datetime import datetime
 
 class PerformanceTester:
     def __init__(self):
@@ -23,6 +26,11 @@ class PerformanceTester:
         self.jitter_angle_count = 0
         
         self.accumulated_latency = 0.0
+        
+        # New coupling violation counters
+        self.pip_clamps = 0
+        self.dip_clamps = 0
+        self.coupling_overrides = 0
 
     def start_test(self):
         self.reset()
@@ -36,16 +44,23 @@ class PerformanceTester:
         print("\n--- ROBUSTNESS TEST STOPPED ---")
         self.print_report(duration)
 
-    def update(self, tracker_output, final_fingers, latency):
+    def update(self, tracker_output, final_fingers, latency_ms, telemetry_flags=None):
         if not self.is_testing:
             return
 
         self.total_frames += 1
-        self.accumulated_latency += latency
+        self.accumulated_latency += latency_ms
         
         hand_detected = tracker_output.get("hand_detected", False)
         if hand_detected:
             self.detected_frames += 1
+            
+            # Record coupling violations
+            if telemetry_flags:
+                for finger, flags in telemetry_flags.items():
+                    if flags.get("pip_clamped"): self.pip_clamps += 1
+                    if flags.get("dip_clamped"): self.dip_clamps += 1
+                    if flags.get("coupling_triggered"): self.coupling_overrides += 1
             
         # Lost tracking event
         if self.prev_hand_detected and not hand_detected:
@@ -99,20 +114,15 @@ class PerformanceTester:
         if self.jitter_angle_count > 0:
             avg_angle_jitter = self.accumulated_angle_jitter / self.jitter_angle_count
             
-        avg_latency_ms = (self.accumulated_latency / self.total_frames) * 1000.0
+        avg_latency_ms = self.accumulated_latency / self.total_frames
 
-        row_str = f"| [Fill in] | {fps:.1f} | {detection_rate:.1f}% | LM: {avg_landmark_jitter:.4f}, Ang: {avg_angle_jitter:.2f} | Latency: {avg_latency_ms:.1f}ms, Lost: {self.lost_tracking_events} |"
+        row_str = f"| [Fill in] | {fps:.1f} | {detection_rate:.1f}% | LM: {avg_landmark_jitter:.4f}, Ang: {avg_angle_jitter:.2f} | Latency: {avg_latency_ms:.1f}ms, Violations: {self.pip_clamps+self.dip_clamps+self.coupling_overrides} |"
 
         print("\nTest Matrix Row:")
         print("| Condition | FPS | Detection Rate | Jitter | Notes |")
         print(row_str)
         print()
 
-        # Save individual test report to test_reports/ to avoid git conflicts
-        import os
-        import json
-        from datetime import datetime
-        
         report_dir = "test_reports"
         if not os.path.exists(report_dir):
             os.makedirs(report_dir)
@@ -130,6 +140,12 @@ class PerformanceTester:
             "avg_angle_jitter": avg_angle_jitter,
             "avg_latency_ms": avg_latency_ms,
             "lost_tracking_events": self.lost_tracking_events,
+            "coupling_violations": {
+                "pip_clamps": self.pip_clamps,
+                "dip_clamps": self.dip_clamps,
+                "pip_dip_coupling_overrides": self.coupling_overrides,
+                "total": self.pip_clamps + self.dip_clamps + self.coupling_overrides
+            },
             "notes": ""
         }
         
@@ -138,5 +154,3 @@ class PerformanceTester:
             
         print(f"✅ Saved detailed test report to: {filepath}")
         print("Tip: Run `python aggregate_tests.py` later to compile all reports into the markdown matrix.\n")
-
-

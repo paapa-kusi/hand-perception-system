@@ -1,0 +1,20 @@
+{
+    "session_id": "20260514_210516",
+    "filter_params": {
+        "min_cutoff": 1.0,
+        "beta": 0.001,
+        "deadband_threshold": 0.5,
+        "timeout_seconds": 0.3
+    },
+    "duration_seconds": 400.1249849796295,
+    "fps": 14.882849668343432,
+    "avg_latency_ms": 19.729315263698524,
+    "detection_rate_pct": 69.06801007556676,
+    "lost_tracking_events": 15,
+    "coupling_violations": {
+        "pip_clamps": 4906,
+        "dip_clamps": 1194,
+        "pip_dip_coupling_overrides": 0,
+        "total": 6100
+    }
+}

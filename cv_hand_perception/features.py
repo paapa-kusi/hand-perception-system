@@ -9,50 +9,101 @@ FINGER_JOINTS = {
     "pinky": {"mcp": (0, 17, 18), "pip": (17, 18, 19), "dip": (18, 19, 20)}
 }
 
-def angle_between_points(a, b, c):
+def compute_palm_normal(landmarks):
+    """
+    Computes the palm normal vector using wrist, index MCP, and pinky MCP.
+    """
+    v1 = np.array(landmarks[5]) - np.array(landmarks[0]) # Wrist to Index MCP
+    v2 = np.array(landmarks[17]) - np.array(landmarks[0]) # Wrist to Pinky MCP
+    n = np.cross(v1, v2)
+    norm = np.linalg.norm(n)
+    return n / norm if norm > 1e-8 else np.array([0, 0, 1])
+
+def angle_between_points(a, b, c, palm_normal=None):
     """
     Calculates the angle at point 'b' given points 'a', 'b', 'c'.
-    Points are expected to be (x, y, z) tuples or numpy arrays.
+    If palm_normal is provided, projects vectors onto the plane perpendicular to the normal.
     """
     ba = np.array(a) - np.array(b)
     bc = np.array(c) - np.array(b)
+
+    if palm_normal is not None:
+        # Project vectors onto the plane perpendicular to the palm normal
+        # v_proj = v - (v dot n) * n
+        ba = ba - np.dot(ba, palm_normal) * palm_normal
+        bc = bc - np.dot(bc, palm_normal) * palm_normal
 
     norm_ba = np.linalg.norm(ba)
     norm_bc = np.linalg.norm(bc)
     
     if norm_ba < 1e-8 or norm_bc < 1e-8:
-        return 180.0  # Default to straight if points are co-located
+        return 180.0
         
     cosine = np.dot(ba, bc) / (norm_ba * norm_bc)
     cosine = np.clip(cosine, -1.0, 1.0)
     
     return np.degrees(np.arccos(cosine))
 
-def extract_finger_features(landmarks):
+def extract_finger_features(landmarks, confidence=1.0):
     """
-    Given a list of 21 landmarks (x, y, z), calculate joint angles and raw curl scores.
+    Given landmarks, calculate joint angles with palm-plane projection,
+    apply ROM clamps, and handle PIP-DIP coupling.
     """
     features = {}
+    palm_normal = compute_palm_normal(landmarks)
     
     for finger_name, joints in FINGER_JOINTS.items():
-        # Calculate angles
+        # Thumb uses raw 3D angles; others use projected angles
+        projection = None if finger_name == "thumb" else palm_normal
+        
         mcp_angle = angle_between_points(landmarks[joints["mcp"][0]], 
                                          landmarks[joints["mcp"][1]], 
-                                         landmarks[joints["mcp"][2]])
+                                         landmarks[joints["mcp"][2]], 
+                                         palm_normal=projection)
                                          
         pip_angle = angle_between_points(landmarks[joints["pip"][0]], 
                                          landmarks[joints["pip"][1]], 
-                                         landmarks[joints["pip"][2]])
+                                         landmarks[joints["pip"][2]], 
+                                         palm_normal=projection)
                                          
         dip_angle = angle_between_points(landmarks[joints["dip"][0]], 
                                          landmarks[joints["dip"][1]], 
-                                         landmarks[joints["dip"][2]])
+                                         landmarks[joints["dip"][2]], 
+                                         palm_normal=projection)
         
         # Bend is defined as how far it is from straight (180 degrees)
         mcp_bend = 180.0 - mcp_angle
         pip_bend = 180.0 - pip_angle
         dip_bend = 180.0 - dip_angle
         
+        # Hard Range of Motion (ROM) Clamps
+        pip_clamped = False
+        dip_clamped = False
+        
+        if pip_bend < 0.0:
+            pip_bend = 0.0
+            pip_clamped = True
+        elif pip_bend > 100.0:
+            pip_bend = 100.0
+            pip_clamped = True
+            
+        if dip_bend < 0.0:
+            dip_bend = 0.0
+            dip_clamped = True
+        elif dip_bend > 80.0:
+            dip_bend = 80.0
+            dip_clamped = True
+
+        # PIP-DIP Biomechanical Coupling Override
+        coupling_triggered = False
+        if confidence < 0.5:
+            dip_bend = 0.67 * pip_bend
+            coupling_triggered = True
+        
+        # Re-calculate angles from clamped bends for consistency
+        pip_angle = 180.0 - pip_bend
+        dip_angle = 180.0 - dip_bend
+
         # Weighted raw curl
         raw_curl = 0.25 * mcp_bend + 0.50 * pip_bend + 0.25 * dip_bend
         
@@ -62,7 +113,12 @@ def extract_finger_features(landmarks):
                 "pip": float(pip_angle),
                 "dip": float(dip_angle)
             },
-            "raw_curl": float(raw_curl)
+            "raw_curl": float(raw_curl),
+            "telemetry": {
+                "pip_clamped": pip_clamped,
+                "dip_clamped": dip_clamped,
+                "coupling_triggered": coupling_triggered
+            }
         }
         
     return features

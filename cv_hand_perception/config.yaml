@@ -11,10 +11,12 @@ mediapipe:
   min_tracking_confidence: 0.6
 
 filters:
-  alpha_landmarks: 0.5
-  alpha_curl: 0.3
+  min_cutoff: 1.0
+  beta: 0.001
+  deadband_threshold: 0.5
   timeout_seconds: 0.3
 
 calibration:
-  default_open: 0.0
-  default_closed: 1.0
+  window_size: 150
+  gamma: 0.02
+  min_sigma: 1.0

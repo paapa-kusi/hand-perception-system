@@ -1,0 +1,18 @@
+{
+    "timestamp": "20260514_210601",
+    "condition": "Opening and closing right hand slowly with light -paapa",
+    "duration_seconds": 16.383438110351562,
+    "fps": 15.015163382865872,
+    "detection_rate_pct": 100.0,
+    "avg_landmark_jitter": 0.009982786474042084,
+    "avg_angle_jitter": 3.3764950373986875,
+    "avg_latency_ms": 18.41546461834171,
+    "lost_tracking_events": 0,
+    "coupling_violations": {
+        "pip_clamps": 341,
+        "dip_clamps": 149,
+        "pip_dip_coupling_overrides": 0,
+        "total": 490
+    },
+    "notes": ""
+}
