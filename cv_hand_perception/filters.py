@@ -13,7 +13,9 @@ import math
 
 class OneEuroFilter:
     def __init__(self, min_cutoff=1.0, beta=0.001, d_cutoff=1.0):
+        # min_cutoff: static stability. Decreasing this reduces jitter but increases lag.
         self.min_cutoff = float(min_cutoff)
+        # beta: speed coefficient. Increasing this reduces lag during fast movements but can introduce jitter.
         self.beta = float(beta)
         self.d_cutoff = float(d_cutoff)
         

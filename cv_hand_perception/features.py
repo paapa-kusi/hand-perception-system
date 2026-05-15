@@ -23,6 +23,9 @@ FINGER_JOINTS = {
 def compute_palm_normal(landmarks):
     """
     Computes the palm normal vector using wrist, index MCP, and pinky MCP.
+    
+    NOTE: This relies on the assumption that the wrist, index MCP, and pinky MCP
+    remain relatively coplanar. This assumption fails under extreme hand scrunching.
     """
     v1 = np.array(landmarks[5]) - np.array(landmarks[0]) # Wrist to Index MCP
     v2 = np.array(landmarks[17]) - np.array(landmarks[0]) # Wrist to Pinky MCP

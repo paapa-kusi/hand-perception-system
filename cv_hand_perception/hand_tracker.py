@@ -46,7 +46,9 @@ class HandTracker:
             
             output["hand_detected"] = True
             output["confidence"] = handedness_info.score
-            # MediaPipe's handedness is often flipped with front-facing webcams
+            # DO NOT FIX: MediaPipe's handedness is intentionally flipped here.
+            # Front-facing webcams mirror the image. MediaPipe infers handedness based on
+            # the raw mirrored image, so a real Right hand looks like a Left hand to the model.
             label = handedness_info.label
             output["handedness"] = "Right" if label == "Left" else "Left"
             
