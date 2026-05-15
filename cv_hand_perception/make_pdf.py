@@ -1,3 +1,14 @@
+"""
+make_pdf.py
+
+Utility script for generating a single PDF document containing all project source 
+code and technical documentation. Useful for sharing the complete Phase 1 pipeline 
+in a portable format.
+
+Interactions:
+- Reads from: All .py pipeline files, ../TECHNICAL_DOCUMENTATION.md
+- Writes to: cv_hand_perception_code.pdf
+"""
 import os
 from fpdf import FPDF
 

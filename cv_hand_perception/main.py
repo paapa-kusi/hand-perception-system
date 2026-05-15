@@ -1,3 +1,15 @@
+"""
+main.py
+
+Primary orchestrator for the Hand Perception Pipeline. Initializes all components
+(camera, tracker, filters, calibrator), manages the real-time execution loop, 
+enforces error recovery, and handles the final integration of the sensory state.
+
+Interactions:
+- Reads from: config.yaml
+- Imports: camera.py, hand_tracker.py, features.py, filters.py, calibration.py, 
+  telemetry.py, tester.py, visualizer.py
+"""
 import cv2
 import time
 import json
@@ -30,7 +42,17 @@ def main():
     mp_cfg = config["mediapipe"]
     filter_cfg = config["filters"]
     calib_cfg = config["calibration"]
+    operator_name = config.get("session", {}).get("operator_name", "default_user")
     
+    if operator_name.strip() in ["", "default_user", "unknown", "CHANGE_ME"]:
+        print("\n" + "="*50)
+        print("ATTENTION: Session operator is not set in config.yaml.")
+        print("Please enter your name to claim this session telemetry.")
+        print("="*50)
+        operator_name = input("Enter operator name: ").strip()
+        if not operator_name:
+            operator_name = "unknown_operator"
+            
     # Initialize components
     camera = CameraManager(
         device_id=camera_cfg["device_id"], 
@@ -59,10 +81,10 @@ def main():
         min_sigma=calib_cfg["min_sigma"]
     )
     
-    telemetry = TelemetryLogger(log_dir="logs")
-    summary_logger = SessionSummaryLogger(filter_params=filter_cfg)
+    telemetry = TelemetryLogger(log_dir="logs", operator_name=operator_name)
+    summary_logger = SessionSummaryLogger(filter_params=filter_cfg, operator_name=operator_name)
     visualizer = Visualizer()
-    tester = PerformanceTester()
+    tester = PerformanceTester(operator_name=operator_name)
     
     if not camera.start():
         return

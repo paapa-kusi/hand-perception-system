@@ -1,3 +1,14 @@
+"""
+camera.py
+
+Handles video capture interfacing via OpenCV. Provides a CameraManager class 
+that wraps hardware connection, manages resolution/FPS settings, and includes
+basic error recovery to gracefully handle dropped frames without crashing.
+
+Interactions:
+- Hardware: Webcams/Cameras via OpenCV
+- Used by: main.py
+"""
 import cv2
 import time
 

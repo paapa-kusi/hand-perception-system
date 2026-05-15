@@ -11,3 +11,8 @@ __pycache__/
 # Application Logs
 cv_hand_perception/logs/
 *.csv
+
+# Configuration & Reports
+cv_hand_perception/config.yaml
+cv_hand_perception/test_reports/
+*.jsonl

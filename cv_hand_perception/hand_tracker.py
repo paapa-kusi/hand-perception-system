@@ -1,3 +1,14 @@
+"""
+hand_tracker.py
+
+Wraps MediaPipe Hands ML inference. Processes RGB frames to extract 21 2.5D 
+hand landmarks. Handles coordinate normalization and actively reverses 
+MediaPipe's handedness classification to correct for mirrored front-facing webcams.
+
+Interactions:
+- External Libs: MediaPipe Hands, OpenCV
+- Used by: main.py
+"""
 import cv2
 import mediapipe as mp
 

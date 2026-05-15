@@ -1,3 +1,13 @@
+"""
+filters.py
+
+Temporal smoothing module for hand states. Implements an adaptive One Euro (1€) 
+low-pass filter to dynamically reduce jitter during slow movements while maintaining 
+low latency during fast motions. Includes deadband logic to prevent servo burnout.
+
+Interactions:
+- Used by: main.py
+"""
 import time
 import math
 

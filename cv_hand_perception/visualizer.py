@@ -1,3 +1,14 @@
+"""
+visualizer.py
+
+Dashboard and debug visualization utility. Uses OpenCV to render the extracted 
+hand skeleton and an overlaid telemetry panel showing FPS, system latency, 
+normalized finger curls, and tracking states directly on the video feed.
+
+Interactions:
+- External Libs: OpenCV, MediaPipe (Drawing Utils)
+- Used by: main.py
+"""
 import cv2
 import mediapipe as mp
 

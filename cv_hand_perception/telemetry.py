@@ -1,11 +1,23 @@
+"""
+telemetry.py
+
+Handles high-frequency performance and state logging. Streams raw frame data, 
+latency metrics, and filter flags to JSON Lines (JSONL) files. Aggregates data into
+session summaries to track long-term stability and detection rates.
+
+Interactions:
+- Writes to: logs/*.jsonl, test_reports/summary_*.json
+- Used by: main.py
+"""
 import os
 import json
 import time
 from datetime import datetime
 
 class TelemetryLogger:
-    def __init__(self, log_dir="logs"):
+    def __init__(self, log_dir="logs", operator_name="unknown"):
         self.log_dir = log_dir
+        self.operator_name = operator_name
         if not os.path.exists(self.log_dir):
             os.makedirs(self.log_dir)
             
@@ -21,6 +33,7 @@ class TelemetryLogger:
         """
         entry = {
             "timestamp": state.get("timestamp", time.time()),
+            "operator_name": self.operator_name,
             "latency_ms": process_time_ms,
             "hand_detected": state.get("hand_detected", False),
             "confidence": state.get("confidence", 0.0),
@@ -42,8 +55,9 @@ class SessionSummaryLogger:
     """
     Aggregates data over a fixed test interval for tuning and stability tracking.
     """
-    def __init__(self, filter_params):
+    def __init__(self, filter_params, operator_name="unknown"):
         self.filter_params = filter_params
+        self.operator_name = operator_name
         self.reset()
 
     def reset(self):
@@ -86,6 +100,7 @@ class SessionSummaryLogger:
         
         summary = {
             "session_id": datetime.now().strftime("%Y%m%d_%H%M%S"),
+            "operator_name": self.operator_name,
             "filter_params": self.filter_params,
             "duration_seconds": duration,
             "fps": fps,

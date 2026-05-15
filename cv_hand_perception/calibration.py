@@ -1,3 +1,13 @@
+"""
+calibration.py
+
+Implements dynamic calibration mapping raw curl angles to a standard [0.0, 1.0] range.
+Utilizes Sliding-Window Normalization (SWN) to compute real-time Z-scores, adapting
+to user anatomy and camera distance dynamically with a peak-seeking fallback.
+
+Interactions:
+- Used by: main.py
+"""
 import numpy as np
 from collections import deque
 

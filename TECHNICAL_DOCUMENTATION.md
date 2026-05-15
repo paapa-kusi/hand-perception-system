@@ -29,8 +29,15 @@ The system utilizes a modular, frame-by-frame feedforward architecture:
 conda env create -f environment.yml
 conda activate hand_perception
 pip install -r requirements.txt
+cp cv_hand_perception/config.example.yaml cv_hand_perception/config.yaml
 python main.py
 ```
+
+**Session Management Workflow:**
+To prevent pushing test sessions with specific operator names to version control and to avoid mixing up biomechanical parameters:
+1. `config.yaml` is intentionally ignored by Git. A `config.example.yaml` is provided instead to track structure without personal data.
+2. At runtime, `main.py` checks the `operator_name` in the configuration.
+3. If the name is left as `"default_user"`, the system will pause in the terminal and prompt the operator to enter their name before launching the camera. This guarantees accurate, person-specific telemetry data without requiring manual file edits.
 
 ## 5. Runtime Requirements
 *   **Hardware:** Standard RGB Webcam, x86 or ARM CPU (GPU optional but recommended for MediaPipe).

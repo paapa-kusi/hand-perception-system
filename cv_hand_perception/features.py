@@ -1,3 +1,14 @@
+"""
+features.py
+
+Core biomechanical feature extraction module. Computes a palm-plane normal vector
+to separate true finger flexion from out-of-plane abduction. Calculates 
+range-of-motion clamped joint angles (MCP, PIP, DIP) and enforces PIP-DIP 
+kinematic coupling under low-confidence conditions.
+
+Interactions:
+- Used by: main.py
+"""
 import numpy as np
 
 # Landmark mapping based on MediaPipe Hands

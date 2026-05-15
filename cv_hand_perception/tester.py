@@ -1,3 +1,15 @@
+"""
+tester.py
+
+In-app robustness testing framework. Records and quantifies tracking stability by 
+measuring landmark jitter, angular jitter, detection rates, and biomechanical 
+coupling violations across defined test intervals.
+
+Interactions:
+- Writes to: test_reports/report_*.json
+- Used by: main.py
+- Read by: aggregate_tests.py
+"""
 import time
 import math
 import os
@@ -5,7 +17,8 @@ import json
 from datetime import datetime
 
 class PerformanceTester:
-    def __init__(self):
+    def __init__(self, operator_name="unknown"):
+        self.operator_name = operator_name
         self.is_testing = False
         self.reset()
 
@@ -132,6 +145,7 @@ class PerformanceTester:
         
         report_data = {
             "timestamp": timestamp,
+            "operator_name": self.operator_name,
             "condition": "[Fill in]",
             "duration_seconds": duration,
             "fps": fps,
