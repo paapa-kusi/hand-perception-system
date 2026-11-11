@@ -157,4 +157,10 @@ def main():
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
+    import sys
+
+    if sys.argv[1:]:
+        from gesture_demo import main as gesture_main
+
+        sys.exit(gesture_main())
     main()

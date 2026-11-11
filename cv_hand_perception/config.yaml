@@ -18,3 +18,8 @@ filters:
 calibration:
   default_open: 0.0
   default_closed: 1.0
+
+gestures:
+  threshold: 0.70
+  dwell_ms: 200
+  max_gap_ms: 150

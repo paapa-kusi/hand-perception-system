@@ -7,7 +7,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.venv/
 
 # Application Logs
 cv_hand_perception/logs/
 *.csv
+
+# Local MediaPipe model assets
+*.task

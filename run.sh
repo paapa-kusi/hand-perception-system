@@ -42,4 +42,4 @@ conda activate "$ENV_NAME"
 echo "Starting the program..."
 # The script expects to be run from the cv_hand_perception directory
 cd cv_hand_perception
-python main.py
+python main.py "$@"
