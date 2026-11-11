@@ -2,15 +2,16 @@ import cv2
 import time
 
 class CameraManager:
-    def __init__(self, device_id=0, width=640, height=480, fps=30):
+    def __init__(self, device_id=0, width=640, height=480, fps=30, backend=cv2.CAP_ANY):
         self.device_id = device_id
         self.width = width
         self.height = height
         self.fps = fps
+        self.backend = backend
         self.cap = None
 
     def start(self):
-        self.cap = cv2.VideoCapture(self.device_id)
+        self.cap = cv2.VideoCapture(self.device_id, self.backend)
         if not self.cap.isOpened():
             print(f"Error: Could not open camera {self.device_id}")
             return False
@@ -35,3 +36,4 @@ class CameraManager:
     def release(self):
         if self.cap is not None:
             self.cap.release()
+
