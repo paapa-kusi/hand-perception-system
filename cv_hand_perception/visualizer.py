@@ -1,11 +1,16 @@
 import cv2
-import mediapipe as mp
+
+HAND_CONNECTIONS = (
+    (0, 1), (1, 2), (2, 3), (3, 4),
+    (0, 5), (5, 6), (6, 7), (7, 8),
+    (5, 9), (9, 10), (10, 11), (11, 12),
+    (9, 13), (13, 14), (14, 15), (15, 16),
+    (13, 17), (0, 17), (17, 18), (18, 19), (19, 20),
+)
 
 class Visualizer:
     def __init__(self):
         self.font = cv2.FONT_HERSHEY_SIMPLEX
-        self.mp_hands = mp.solutions.hands
-        self.mp_drawing = mp.solutions.drawing_utils
 
     def draw_skeleton(self, frame, landmarks_pixel):
         """
@@ -18,7 +23,7 @@ class Visualizer:
             return
             
         # Draw connections
-        for connection in self.mp_hands.HAND_CONNECTIONS:
+        for connection in HAND_CONNECTIONS:
             start_idx = connection[0]
             end_idx = connection[1]
             
@@ -70,3 +75,4 @@ class Visualizer:
                     cv2.rectangle(frame, (120, y_offset - 15), (120 + bar_fill, y_offset), (0, 255, 0), -1)
                     
                     y_offset += 35
+
