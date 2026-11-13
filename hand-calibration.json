@@ -33,7 +33,7 @@
     },
     {
       "finger": "ring",
-      "closed": 0,
+      "closed": 15,
       "pin": 7,
       "open": 180
     }
