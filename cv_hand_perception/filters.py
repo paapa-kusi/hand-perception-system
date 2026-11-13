@@ -72,3 +72,4 @@ class HandStateFilter:
         self.last_valid_time = current_time
         self.last_valid_state = filtered_state
         return filtered_state
+

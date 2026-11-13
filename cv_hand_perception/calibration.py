@@ -32,3 +32,4 @@ class CalibrationManager:
             
         normalized = (raw_curl - open_baseline) / (closed_baseline - open_baseline)
         return float(np.clip(normalized, 0.0, 1.0))
+

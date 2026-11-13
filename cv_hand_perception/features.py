@@ -82,3 +82,4 @@ def normalize_landmarks(landmarks):
         normalized.append((float(norm_point[0]), float(norm_point[1]), float(norm_point[2])))
         
     return normalized
+

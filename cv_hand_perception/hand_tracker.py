@@ -50,3 +50,4 @@ class HandTracker:
 
     def close(self):
         self.hands.close()
+

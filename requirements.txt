@@ -1,3 +1,4 @@
-mediapipe
-opencv-python
-pyyaml
+opencv-python==4.11.0.86
+pyserial==3.5
+PyYAML==6.0.3
+

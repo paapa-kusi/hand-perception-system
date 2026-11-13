@@ -1,0 +1,76 @@
+{
+  "port": "auto",
+  "actuators": [
+    {
+      "finger": "pointer",
+      "closed": 150,
+      "pin": 2,
+      "open": 0
+    },
+    {
+      "finger": "thumb",
+      "closed": 0,
+      "pin": 3,
+      "open": 180
+    },
+    {
+      "finger": "pinky",
+      "closed": 180,
+      "pin": 4,
+      "open": 0
+    },
+    {
+      "finger": "middle",
+      "closed": 0,
+      "pin": 5,
+      "open": 180
+    },
+    {
+      "finger": "palm",
+      "closed": 0,
+      "pin": 6,
+      "open": 100
+    },
+    {
+      "finger": "ring",
+      "closed": 15,
+      "pin": 7,
+      "open": 180
+    }
+  ],
+  "peace": {
+    "pointer": "open",
+    "middle": "open",
+    "ring": "closed",
+    "pinky": "closed",
+    "thumb": "closed"
+  },
+  "open_palm": {
+    "thumb": "open",
+    "pointer": "open",
+    "middle": "open",
+    "ring": "open",
+    "pinky": "open",
+    "palm": "open"
+  },
+  "fist": {
+    "pointer": "closed",
+    "middle": "closed",
+    "ring": "closed",
+    "pinky": "closed",
+    "thumb": "closed"
+  },
+  "horns": {
+    "pointer": "open",
+    "pinky": "open",
+    "middle": "closed",
+    "ring": "closed",
+    "thumb": "closed"
+  },
+  "okay": {
+    "pointer": 112,
+    "palm": 45,
+    "thumb": 115
+  }
+}
+

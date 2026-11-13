@@ -52,3 +52,4 @@ class Logger:
         with open(self.filepath, mode='a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(row)
+
